@@ -1,4 +1,5 @@
 import uuid from 'react-uuid';
+import { remove as lodashRemove } from 'lodash';
 import todoAction from '../../actions/todo';
 import { status } from '../../utils/type';
 
@@ -16,15 +17,20 @@ const putTodo = (id, todoObj) => (
 );
 const removeTodo = (id) => localStorage.removeItem(`${prefix}:${id}`);
 
-const addTodo = newTodo => dispatch => {
+const addTodo = todo => dispatch => {
+  const todoId = todo.id ? todo.id : uuid();
   const todoIdsList = todoIds();
-  const todoId = uuid();
-  const todoObj = { id: todoId, todo: newTodo, status: status.uncompleted };
+  const todoObj = {
+    id: todoId,
+    todo: todo.todo,
+    status: todo.status ? todo.status : status.uncompleted
+  };
   putTodo(todoId, todoObj);
   todoIdsList.push(todoId);
   updateTodoIds(todoIdsList);
   dispatch(todoAction.addTodo(todoObj));
 };
+
 const markTodo = ({ markedIds, completed }) => dispatch => {
   const updatedTodo = markedIds.map(id => {
     const todoObj = getTodoById(id);
@@ -34,23 +40,26 @@ const markTodo = ({ markedIds, completed }) => dispatch => {
   });
   dispatch(todoAction.markTodo(updatedTodo));
 };
+
 const getTodoList = () => dispatch => {
   const todoIdsList = todoIds();
   const todoList = todoIdsList.map(id => getTodoById(id));
   dispatch(todoAction.getTodoList(todoList));
 };
+
 const clearCompleted = ids => dispatch => {
   const todoIdsList = todoIds();
   ids.forEach(id => {
-    todoIdsList.shift(id);
+    lodashRemove(todoIdsList, (todoId) => todoId === id);
     removeTodo(id);
   }); 
   updateTodoIds(todoIdsList);
   dispatch(todoAction.getTodoList(ids));
 };
+
 const deleteTodo = id => dispatch => {
   const todoIdsList = todoIds();
-  todoIdsList.shift(id);
+  lodashRemove(todoIdsList, (todoId) => todoId === id);
   updateTodoIds(todoIdsList);
   removeTodo(id);
   dispatch(todoAction.deleteTodo(id));

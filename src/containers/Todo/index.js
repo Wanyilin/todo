@@ -21,6 +21,12 @@ const Wrapper = styled.div`
     text-align: center;
     color: rgba(175, 47, 47, 0.15);
 	}
+	.todo {
+		margin: 20px 30px;
+		text-align: center;
+		border: 1px solid #ced4da;
+    border-top: transparent;
+	}
 `
 
 const Todo = () => {
@@ -45,7 +51,7 @@ const Todo = () => {
 	const completedTodoList = todoList.filter(item => item.status === status.completed);
 
 	const onAddTodo = (todoText) => {
-		addTodoAction(todoText);
+		addTodoAction({ todo: todoText });
 		getTodoListAction();
 	};
 	const onClearCompletedTodo = () => {
@@ -68,16 +74,18 @@ const Todo = () => {
 			<div className="header">
 				<h1>todos</h1>
 			</div>
-			<AddTodo onAddTodo={onAddTodo} onMarkAllCompleted={onMarkAllCompleted} />
-			<TodoList todoList={currentList}/>
-			{todoList.length > 0 && (
-				<Footer
-					todoCount={uncompletedTodoList.length}
-					setCurrCategory={setCurrCategory}
-					currCategory={currCategory}
-					onClearCompletedTodo={onClearCompletedTodo}
-				/>
-			)}
+			<div className="todo">
+				<AddTodo onAddTodo={onAddTodo} onMarkAllCompleted={onMarkAllCompleted} />
+				<TodoList todoList={currentList}/>
+				{todoList.length > 0 && (
+					<Footer
+						todoCount={uncompletedTodoList.length}
+						setCurrCategory={setCurrCategory}
+						currCategory={currCategory}
+						onClearCompletedTodo={onClearCompletedTodo}
+					/>
+				)}
+			</div>
 		</Wrapper>
 	)
 };

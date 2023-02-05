@@ -1,45 +1,42 @@
-import React from 'react';
-import { ListGroup, Form, Button } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { ListGroup } from 'react-bootstrap';
+import styled from 'styled-components';
 
+import TodoListItem from './TodoListItem';
 import {
+  addTodo,
 	getTodoList,
   markTodo,
   deleteTodo,
 } from './util';
-import { status as stateType } from '../../utils/type';
 import { useActions } from '../../hooks/useActions';
+import { useOutsideClick } from '../../hooks/useOutsideClick';
 
-const ListItem = ({ id, todo, status, onClickDelete, onClickCheckBox }) => (
-  <ListGroup.Item>
-    <Form.Check
-      type="checkbox"
-      id={`default-${todo}`}
-      label={todo}
-      onClick={({ target }) => onClickCheckBox(target.checked, id)}
-      defaultChecked={status === stateType.completed}
-    />
-    <Button
-      variant="light"
-      onClick={() => onClickDelete(id)}
-    >
-      X
-    </Button>
-  </ListGroup.Item>
-)
+
+const Wrapper = styled.div`
+  .list-group-item {
+    border-left: 0;
+    border-right: 0;
+  }
+`
 
 const TodoList = ({
   todoList,
-  todoType,
 }) => {
   const [
     getTodoListAction,
     markTodoAction,
     deleteTodoAction,
+    addTodoAction,
   ] = useActions([
     getTodoList,
     markTodo,
     deleteTodo,
-  ])
+    addTodo,
+  ]);
+  const [editTodo, setEditTodo] = useState();
+  
+  const ref = useOutsideClick(() => setEditTodo());
   const onClickDelete = id => {
     deleteTodoAction(id);
     getTodoListAction();
@@ -48,19 +45,34 @@ const TodoList = ({
     markTodoAction({ markedIds: [id], completed: checked });
     getTodoListAction();
   };
+  const onEditTodoText = (e, todoObj) => {
+    if (e.key === 'Enter') {
+      const { value } = e.target;
+      const todoTextFormatted = value.trim();
+      if (todoTextFormatted) {
+        addTodoAction({ ...todoObj, todo: todoTextFormatted });
+        getTodoListAction();
+        setEditTodo();
+      }
+    }
+  };
   return (
-    <>
+    <Wrapper>
       <ListGroup>
         {todoList && todoList.map(todo => (
-          <ListItem
+          <TodoListItem
+            ref={ref}
             key={todo.id}
             {...todo}
+            setEditTodo={setEditTodo}
+            editTodo={editTodo}
             onClickDelete={onClickDelete}
             onClickCheckBox={onClickCheckBox}
+            onEditTodoText={onEditTodoText}
           />
         ))}
       </ListGroup>
-    </>
+    </Wrapper>
   )
 };
 

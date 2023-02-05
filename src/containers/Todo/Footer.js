@@ -2,8 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button, ButtonGroup} from 'react-bootstrap';
 
-import { clearCompleted, getTodoList } from './util';
-import { useActions } from '../../hooks/useActions';
+const Wrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 5px;
+  .btn-link {
+    padding: 0;
+  }
+`
 
 const Footer = ({
   todoCount,
@@ -12,7 +18,7 @@ const Footer = ({
   onClearCompletedTodo
 }) => {
   return (
-    <>
+    <Wrapper>
       <span>
         {todoCount} items left
       </span>
@@ -42,7 +48,7 @@ const Footer = ({
       >
         Clear Completed
       </Button>
-    </>
+    </Wrapper>
   )
 };
 
