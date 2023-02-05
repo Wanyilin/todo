@@ -3,12 +3,10 @@ const path = require('path');
 
 module.exports = {
   entry: './src/index.js',
-  mode: 'development',
   output: {
-    path: path.resolve(__dirname, './dist'),
-    filename: 'index_bundle.js',
+    path: path.resolve(__dirname, './build'),
+    filename: 'main.js',
   },
-  target: 'web',
   devServer: {
     port: '3000',
     static: {
