@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import { ListGroup } from 'react-bootstrap';
 import styled from 'styled-components';
-
-import TodoListItem from './TodoListItem';
 import {
-  addTodo,
-	getTodoList,
-  markTodo,
+  updateTodo,
   deleteTodo,
-} from './util';
-import { useActions } from '../../hooks/useActions';
-import { useOutsideClick } from '../../hooks/useOutsideClick';
+} from 'src/actions/todo';
+import { STATUS, TODOLIST_TYPE } from 'src/utils/type';
+import { useActions } from 'src/hooks/useActions';
+import { useOutsideClick } from 'src/hooks/useOutsideClick';
+import TodoListItem from './TodoListItem';
 
 
 const Wrapper = styled.div`
@@ -21,54 +19,54 @@ const Wrapper = styled.div`
 `
 
 const TodoList = ({
+  currCategory,
   todoList,
 }) => {
   const [
-    getTodoListAction,
-    markTodoAction,
+    updateTodoAction,
     deleteTodoAction,
-    addTodoAction,
   ] = useActions([
-    getTodoList,
-    markTodo,
+    updateTodo,
     deleteTodo,
-    addTodo,
   ]);
   const [editTodo, setEditTodo] = useState();
+  const currTodoList = todoList.filter(todo => {
+    if (currCategory === TODOLIST_TYPE.ALL) return todo;
+    if (currCategory === TODOLIST_TYPE.UNCOMPLETED)
+      return todo.status === STATUS.UNCOMPLETED;
+    if (currCategory === TODOLIST_TYPE.COMPLETED)
+    return todo.status === STATUS.COMPLETED;
+  })
+
   
   const ref = useOutsideClick(() => setEditTodo());
-  const onClickDelete = id => {
-    deleteTodoAction(id);
-    getTodoListAction();
-  };
-  const onClickCheckBox = (checked, id) => {
-    markTodoAction({ markedIds: [id], completed: checked });
-    getTodoListAction();
-  };
-  const onEditTodoText = (e, todoObj) => {
+  const onClickDelete = id => deleteTodoAction(id);
+  const onCheckTodo = (todoObj, checked) => updateTodoAction(todoObj, checked);
+
+  const onEditTodoContent = (e, todoObj) => {
     if (e.key === 'Enter') {
       const { value } = e.target;
       const todoTextFormatted = value.trim();
-      if (todoTextFormatted) {
-        addTodoAction({ ...todoObj, todo: todoTextFormatted });
-        getTodoListAction();
-        setEditTodo();
-      }
+      if (!todoTextFormatted)  return;
+      updateTodoAction({ ...todoObj, content: todoTextFormatted }, todoObj.status);
+      setEditTodo();
     }
   };
   return (
     <Wrapper>
       <ListGroup>
-        {todoList && todoList.map(todo => (
+        {currTodoList && currTodoList.map(todo => (
           <TodoListItem
             ref={ref}
             key={todo.id}
-            {...todo}
+            id={todo.id}
+            content={todo.content}
+            status={todo.status}
             setEditTodo={setEditTodo}
             editTodo={editTodo}
             onClickDelete={onClickDelete}
-            onClickCheckBox={onClickCheckBox}
-            onEditTodoText={onEditTodoText}
+            onCheckTodo={onCheckTodo}
+            onEditTodoContent={onEditTodoContent}
           />
         ))}
       </ListGroup>

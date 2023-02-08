@@ -1,36 +1,61 @@
 import {
-  ADD_TODO,
+  CREATE_TODO,
   DELETE_TODO,
-  CLEAR_TODO_COMPLETED,
-  MARK_TODO,
+  DELETE_TODO_COMPLETED,
+  UPDATE_TODO,
   GET_TODO_LIST,
-} from '../utils/type';
+} from 'src/utils/type';
 
 const initialState = {
   todo: {}
 }
 
 const todoReducer = ( state = initialState, action ) => {
-  const { type, data } = action
+  const { todo } = state;
+  const newTodo = { ...todo };
+  const { type, data } = action;
   switch (type) {
-    case ADD_TODO:
-      state.todo[data.id] = data;
-      return state;
-    case DELETE_TODO:
-      delete state[data];
-      return state;
-    case CLEAR_TODO_COMPLETED:
+    case CREATE_TODO: {
+      return {
+        ...state,
+        todo: {
+          ...todo,
+          [data.id]: data,
+        }
+      };
+    }
+    case DELETE_TODO: {
+      delete newTodo[data];
+      return {
+        ...state,
+        todo: newTodo,
+      };
+    }
+    case DELETE_TODO_COMPLETED: {
       data.forEach(id => {
-        delete state.todo[id]
+        delete newTodo[id]
       })
-      return state;
-    case MARK_TODO: 
-      data.forEach(item => state.todo[item.id] = item);
-      return state;
-    case GET_TODO_LIST:
-      const todoList = {};
-      data.forEach(item => todoList[item.id] = item);
-      return { todo: todoList };
+      return {
+        ...state,
+        todo: newTodo,
+      };
+    }
+    case UPDATE_TODO: {
+      return {
+        ...state,
+        todo: {
+          ...todo,
+          ...data,
+        }
+      }
+    }
+    case GET_TODO_LIST: {
+      const todoList = data.reduce((acc, curr) => {
+        acc[curr.id] = curr;
+        return acc;
+      }, {})
+      return { ...state, todo: todoList };
+    }
   }
 }
 

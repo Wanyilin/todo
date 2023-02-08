@@ -1,20 +1,27 @@
-const ADD_TODO = 'ADD/TODO';
+const CREATE_TODO = 'CREATE/TODO';
 const DELETE_TODO = 'DELETE/TODO';
-const CLEAR_TODO_COMPLETED = 'CLEAR/TODO/COMPLETED';
-const MARK_TODO = 'MARK/TODO';
+const DELETE_TODO_COMPLETED = 'DELETE/TODO/COMPLETED';
+const UPDATE_TODO = 'UPDATE/TODO';
 const GET_TODO_LIST = 'GET/TODO';
 
-const status = {
-  uncompleted: 0,
-  completed: 1,
+const STATUS = {
+  UNCOMPLETED: 0,
+  COMPLETED: 1,
+}
+
+const TODOLIST_TYPE = {
+  ALL: 'all',
+  UNCOMPLETED: 'uncompleted',
+  COMPLETED: 'completed'
 }
 
 
 export {
-  ADD_TODO,
+  CREATE_TODO,
   DELETE_TODO,
-  CLEAR_TODO_COMPLETED,
-  MARK_TODO,
+  DELETE_TODO_COMPLETED,
+  UPDATE_TODO,
   GET_TODO_LIST,
-  status,
+  STATUS,
+  TODOLIST_TYPE,
 };

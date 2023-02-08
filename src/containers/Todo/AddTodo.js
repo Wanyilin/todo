@@ -15,19 +15,26 @@ const Wrapper = styled.div`
 `
 
 const AddTodo = ({
-  onMarkAllCompleted,
-  onAddTodo,
+  onMarkAllTodo,
+  onCreateTodo,
+  isAnyTodo,
+  todoStatistics: {
+    completedCount,
+    todoCount
+  }
 }) => {
-  const onClick = (e) => {
+  const allowCheckAll = todoCount || completedCount;
+  const onEnterTodo = (e) => {
     if (e.key === 'Enter') {
       const { value } = e.target;
       const todoTextFormatted = value.trim();
       if (todoTextFormatted) {
-        onAddTodo(todoTextFormatted);
+        onCreateTodo(todoTextFormatted);
         e.target.value = '';
       }
     }
   };
+  const btnName = isAnyTodo ? 'Mark all done' : allowCheckAll ? 'Mark all uncompleted' : 'Todo';
   return (
     <Wrapper>
       <InputGroup>
@@ -35,9 +42,10 @@ const AddTodo = ({
           variant="secondary"
           id="mark-all-done"
           className="mark-all-done-btn"
-          onClick={onMarkAllCompleted}
+          onClick={onMarkAllTodo}
+          disabled={!allowCheckAll}
         >
-          Mark all done
+          {btnName}
         </Button>
         <FloatingLabel
           controlId="floatingInput"
@@ -47,7 +55,7 @@ const AddTodo = ({
           <Form.Control
             type="input"
             placeholder="What need to be done?"
-            onKeyDown={onClick}
+            onKeyDown={onEnterTodo}
             className="add-todo-input"
           />
         </FloatingLabel>
