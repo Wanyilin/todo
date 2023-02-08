@@ -8,8 +8,8 @@ import {
   UPDATE_TODO,
   GET_TODO_LIST,
   STATUS,
-} from '../utils/type';
-import jsonSafeParse from '../utils/jsonSafeParse';
+} from 'src/utils/type';
+import jsonSafeParse from 'src/utils/jsonSafeParse';
 
 const PREFIX = 'todo';
 

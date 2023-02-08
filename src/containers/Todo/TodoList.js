@@ -31,11 +31,11 @@ const TodoList = ({
   ]);
   const [editTodo, setEditTodo] = useState();
   const currTodoList = todoList.filter(todo => {
-    if (currCategory === TODOLIST_TYPE.ALL) return todo;
     if (currCategory === TODOLIST_TYPE.UNCOMPLETED)
       return todo.status === STATUS.UNCOMPLETED;
     if (currCategory === TODOLIST_TYPE.COMPLETED)
-    return todo.status === STATUS.COMPLETED;
+      return todo.status === STATUS.COMPLETED;
+    return todo;
   })
 
   
