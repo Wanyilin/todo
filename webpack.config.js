@@ -17,6 +17,9 @@ module.exports = {
     liveReload: true,
   },
   resolve: {
+    alias: {
+      'src': path.resolve(__dirname, './src'),
+    },
     extensions: ['.js', '.jsx', '.json'],
   },
   module: {

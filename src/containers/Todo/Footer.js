@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, ButtonGroup} from 'react-bootstrap';
+import { TODOLIST_TYPE } from 'src/utils/type';
 
 const Wrapper = styled.div`
   display: flex;
@@ -12,42 +13,40 @@ const Wrapper = styled.div`
 `
 
 const Footer = ({
-  todoCount,
+  todoStatistics: {
+    todoCount,
+    completedCount,
+  },
   setCurrCategory,
   currCategory,
   onClearCompletedTodo
 }) => {
+  const todoCat = Object.keys(TODOLIST_TYPE);
+  const todoCountStr = `${todoCount} ${todoCount > 1 ? 'items' : 'item'} left`
   return (
     <Wrapper>
       <span>
-        {todoCount} items left
+        {todoCountStr}
       </span>
       <ButtonGroup>
-        <Button
-          variant={currCategory === 'all' ? 'secondary' : 'outline-secondary'}
-          onClick={() => setCurrCategory('all')}
-        >
-          All
-        </Button>
-        <Button
-          variant={currCategory === 'uncompleted' ? 'secondary' : 'outline-secondary'}
-          onClick={() => setCurrCategory('uncompleted')}
-        >
-          Active
-        </Button>
-        <Button
-          variant={currCategory === 'completed' ? 'secondary' : 'outline-secondary'}
-          onClick={() => setCurrCategory('completed')}
-        >
-          Completed
-        </Button>
+        {todoCat.map(cat => (
+          <Button
+            key={cat}
+            variant={currCategory === TODOLIST_TYPE[cat] ? 'secondary' : 'outline-secondary'}
+            onClick={() => setCurrCategory(TODOLIST_TYPE[cat])}
+          >
+            {cat}
+          </Button>
+        ))}
       </ButtonGroup>
-      <Button
-        variant="link"
-        onClick={onClearCompletedTodo}
-      >
-        Clear Completed
-      </Button>
+      {completedCount > 0 && (
+        <Button
+          variant="link"
+          onClick={onClearCompletedTodo}
+        >
+          Clear Completed
+        </Button>
+      )}
     </Wrapper>
   )
 };

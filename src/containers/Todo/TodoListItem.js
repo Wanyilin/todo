@@ -2,7 +2,7 @@ import React, { forwardRef } from 'react';
 import { ListGroup, Form, Button, InputGroup } from 'react-bootstrap';
 import styled from 'styled-components';
 
-import { status as stateType } from '../../utils/type';
+import { STATUS } from 'src/utils/type';
 
 const Wrapper = styled.div`
   .input-group {
@@ -20,14 +20,19 @@ const Wrapper = styled.div`
 
 const TodoListItem = forwardRef(({
   id,
-  todo,
+  content,
   status,
   onClickDelete,
-  onClickCheckBox,
+  onCheckTodo,
   editTodo,
   setEditTodo,
-  onEditTodoText,
+  onEditTodoContent,
 }, ref) => {
+  const isCompleted = status === STATUS.COMPLETED;
+  const onClickCheckBox = ({ target }) => onCheckTodo({ id, content },target.checked);
+  const onDoubleClickContent = () => setEditTodo(id);
+  const onClickDeleteBtn = () => onClickDelete(id);
+  const onEditTodo = (e) => onEditTodoContent(e, { id, content, status });
   return (
     <Wrapper>
       <ListGroup.Item>
@@ -35,20 +40,20 @@ const TodoListItem = forwardRef(({
           <InputGroup>
             <Form.Check
               type="checkbox"
-              id={`default-${todo}`}
-              onClick={({ target }) => onClickCheckBox(target.checked, id)}
-              checked={status === stateType.completed}
+              id={id}
+              onChange={onClickCheckBox}
+              checked={isCompleted}
             />
             <Form.Control
-              className={status === stateType.completed ? 'text-corssover' : ''}
-              onDoubleClick={() => setEditTodo(id)}
+              className={isCompleted ? 'text-corssover' : ''}
+              onDoubleClick={onDoubleClickContent}
               readOnly
               plaintext
-              defaultValue={todo}
+              defaultValue={content}
             />
             <Button
               variant="light"
-              onClick={() => onClickDelete(id)}
+              onClick={onClickDeleteBtn}
             >
               X
             </Button>
@@ -57,8 +62,8 @@ const TodoListItem = forwardRef(({
           <Form.Control
             autoFocus
             ref={ref}
-            onKeyDown={(e) => onEditTodoText(e, { id, todo, status })}
-            defaultValue={todo}
+            onKeyDown={onEditTodo}
+            defaultValue={content}
           />
         )}
       </ListGroup.Item>
