@@ -2,7 +2,7 @@ import React, { forwardRef } from 'react';
 import { ListGroup, Form, Button, InputGroup } from 'react-bootstrap';
 import styled from 'styled-components';
 
-import { STATUS } from 'src/utils/type';
+import { STATUS } from 'src/utils/consts';
 
 const Wrapper = styled.div`
   .input-group {
@@ -15,7 +15,6 @@ const Wrapper = styled.div`
       text-decoration-line: line-through;
     }
   }
-
 `
 
 const TodoListItem = forwardRef(({
@@ -32,7 +31,7 @@ const TodoListItem = forwardRef(({
   const onClickCheckBox = ({ target }) => onCheckTodo({ id, content },target.checked);
   const onDoubleClickContent = () => setEditTodo(id);
   const onClickDeleteBtn = () => onClickDelete(id);
-  const onEditTodo = (e) => onEditTodoContent(e, { id, content, status });
+  const onEditTodo = () => onEditTodoContent({ id, content, status });
   return (
     <Wrapper>
       <ListGroup.Item>

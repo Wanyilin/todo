@@ -1,6 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, Form, FloatingLabel, InputGroup } from 'react-bootstrap';
+import { createTodo } from 'src/actions/todo';
+import { useActions } from 'src/hooks/useActions';
+
 
 const Wrapper = styled.div`
   box-shadow: 0px 2px 4px black;
@@ -15,26 +18,36 @@ const Wrapper = styled.div`
 `
 
 const AddTodo = ({
-  onMarkAllTodo,
-  onCreateTodo,
+  onUpdateAllTodo,
   isAnyTodo,
-  todoStatistics: {
+  todoStatistics,
+}) => {
+  const [
+		createTodoAction,
+	] = useActions([
+		createTodo,
+	]);
+  const {
     completedCount,
     todoCount
-  }
-}) => {
+  } = todoStatistics;
   const allowCheckAll = todoCount || completedCount;
   const onEnterTodo = (e) => {
     if (e.key === 'Enter') {
       const { value } = e.target;
       const todoTextFormatted = value.trim();
       if (todoTextFormatted) {
-        onCreateTodo(todoTextFormatted);
+        createTodoAction(todoTextFormatted);
         e.target.value = '';
       }
     }
   };
-  const btnName = isAnyTodo ? 'Mark all done' : allowCheckAll ? 'Mark all uncompleted' : 'Todo';
+  let btnName = 'Todo';
+  if (isAnyTodo) {
+    btnName = 'Mark all completed';
+  } else if ( allowCheckAll) {
+    btnName = 'Mark all uncompleted';
+  }
   return (
     <Wrapper>
       <InputGroup>
@@ -42,7 +55,7 @@ const AddTodo = ({
           variant="secondary"
           id="mark-all-done"
           className="mark-all-done-btn"
-          onClick={onMarkAllTodo}
+          onClick={onUpdateAllTodo}
           disabled={!allowCheckAll}
         >
           {btnName}

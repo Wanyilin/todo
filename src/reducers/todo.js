@@ -4,7 +4,7 @@ import {
   DELETE_TODO_COMPLETED,
   UPDATE_TODO,
   GET_TODO_LIST,
-} from 'src/utils/type';
+} from 'src/utils/consts';
 
 const initialState = {
   todo: {}

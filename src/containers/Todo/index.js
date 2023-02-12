@@ -2,13 +2,12 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import {
-	createTodo,
-  updateTodo,
-  getTodoList,
-  deleteAllCompleted,
+	updateTodo,
+	getTodoList,
+	deleteAllCompleted,
 } from 'src/actions/todo';
 import { useActions } from 'src/hooks/useActions';
-import { STATUS, TODOLIST_TYPE } from 'src/utils/type';
+import { STATUS, TODOLIST_TYPE } from 'src/utils/consts';
 import AddTodo from './AddTodo';
 import TodoList from './TodoList';
 import Footer from './Footer';
@@ -30,17 +29,15 @@ const Wrapper = styled.div`
 
 const Todo = () => {
 	const [
-		createTodoAction,
+		updateTodoAction,
 		getTodoListAction,
 		deleteAllCompletedAction,
-		updateTodoAction
 	] = useActions([
-		createTodo,
+		updateTodo,
 		getTodoList,
 		deleteAllCompleted,
-		updateTodo,
 	]);
-	
+
 	useEffect(() => {
 		getTodoListAction();
 	}, []);
@@ -49,26 +46,20 @@ const Todo = () => {
 	const todoList = listFromState ? Object.values(listFromState) : [];
 	const [currCategory, setCurrCategory] = useState(TODOLIST_TYPE.ALL);
 	const todoStatistics = todoList.reduce((acc, curr) => {
-		acc.todoCount = curr.status === STATUS.UNCOMPLETED ? acc.todoCount + 1 : acc.todoCount;
-		acc.completedCount = curr.status === STATUS.COMPLETED ? acc.completedCount + 1 : acc.completedCount;
+		if (curr.status === STATUS.UNCOMPLETED) acc.todoCount = acc.todoCount + 1;
+		if (curr.status === STATUS.COMPLETED) acc.completedCount = acc.completedCount + 1;
 		return acc;
 	}, { todoCount: 0, completedCount: 0 });
 	const isAnyTodo = todoList.length > 0 && todoStatistics.todoCount > 0;
 
-	const onCreateTodo = (todoContent) => {
-		createTodoAction(todoContent);
-	};
 	const onClearCompletedTodo = () => {
 		const ids = todoList
-		.filter(todo => todo.status === STATUS.COMPLETED)
-		.map(todo => todo.id);
+			.filter(todo => todo.status === STATUS.COMPLETED)
+			.map(todo => todo.id);
 		deleteAllCompletedAction(ids);
 	};
 
-	const onMarkAllTodo= () => {
-		const statusToUpdate = isAnyTodo ? STATUS.COMPLETED : STATUS.UNCOMPLETED;
-		updateTodoAction(todoList, statusToUpdate );
-	}
+	const onUpdateAllTodo = () => updateTodoAction(todoList, isAnyTodo);
 
 	return (
 		<Wrapper>
@@ -77,12 +68,11 @@ const Todo = () => {
 			</div>
 			<div className="todo">
 				<AddTodo
-					onCreateTodo={onCreateTodo}
-					onMarkAllTodo={onMarkAllTodo}
 					isAnyTodo={isAnyTodo}
 					todoStatistics={todoStatistics}
+					onUpdateAllTodo={onUpdateAllTodo}
 				/>
-				<TodoList currCategory={currCategory} todoList={todoList}/>
+				<TodoList currCategory={currCategory} todoList={todoList} />
 				{todoList.length > 0 && (
 					<Footer
 						todoStatistics={todoStatistics}

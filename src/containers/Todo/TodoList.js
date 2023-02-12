@@ -5,10 +5,11 @@ import {
   updateTodo,
   deleteTodo,
 } from 'src/actions/todo';
-import { STATUS, TODOLIST_TYPE } from 'src/utils/type';
+import { STATUS, TODOLIST_TYPE } from 'src/utils/consts';
 import { useActions } from 'src/hooks/useActions';
 import { useOutsideClick } from 'src/hooks/useOutsideClick';
 import TodoListItem from './TodoListItem';
+import { mapTodotypeToStatus } from './utils';
 
 
 const Wrapper = styled.div`
@@ -30,20 +31,12 @@ const TodoList = ({
     deleteTodo,
   ]);
   const [editTodo, setEditTodo] = useState();
-  const currTodoList = todoList.filter(todo => {
-    if (currCategory === TODOLIST_TYPE.UNCOMPLETED)
-      return todo.status === STATUS.UNCOMPLETED;
-    if (currCategory === TODOLIST_TYPE.COMPLETED)
-      return todo.status === STATUS.COMPLETED;
-    return todo;
-  })
-
-  
+  const currTodoList = mapTodotypeToStatus(currCategory, todoList);
   const ref = useOutsideClick(() => setEditTodo());
   const onClickDelete = id => deleteTodoAction(id);
   const onCheckTodo = (todoObj, checked) => updateTodoAction(todoObj, checked);
 
-  const onEditTodoContent = (e, todoObj) => {
+  const onEditTodoContent = e => todoObj => {
     if (e.key === 'Enter') {
       const { value } = e.target;
       const todoTextFormatted = value.trim();

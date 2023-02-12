@@ -4,17 +4,17 @@ const DELETE_TODO_COMPLETED = 'DELETE/TODO/COMPLETED';
 const UPDATE_TODO = 'UPDATE/TODO';
 const GET_TODO_LIST = 'GET/TODO';
 
-const STATUS = {
-  UNCOMPLETED: 0,
-  COMPLETED: 1,
-}
 
 const TODOLIST_TYPE = {
-  ALL: 'all',
-  UNCOMPLETED: 'uncompleted',
-  COMPLETED: 'completed'
+  ALL: 'ALL',
+  UNCOMPLETED: 'UNCOMPLETED',
+  COMPLETED: 'COMPLETED'
 }
 
+const STATUS = {
+  COMPLETED: 0,
+  UNCOMPLETED: 1,
+}
 
 export {
   CREATE_TODO,

@@ -8,7 +8,7 @@ import {
   UPDATE_TODO,
   GET_TODO_LIST,
   STATUS,
-} from 'src/utils/type';
+} from 'src/utils/consts';
 import jsonSafeParse from 'src/utils/jsonSafeParse';
 
 const PREFIX = 'todo';
@@ -50,26 +50,23 @@ const createTodo = todoContent => dispatch => {
 
 const updateTodo = (modifiedTodo, completed) => dispatch => {
   let updatedTodos = {};
+  const modifiedStatus = completed ? STATUS.COMPLETED : STATUS.UNCOMPLETED;
   const setModifiedTodoObj = ({ id, content }) => {
     const modifiedObj = {
       id,
       content,
-      status: completed ? STATUS.COMPLETED : STATUS.UNCOMPLETED
+      status: modifiedStatus,
     }
     setTodo(id, modifiedObj);
     return modifiedObj;
   };
-  if (Array.isArray(modifiedTodo)) {
+  if (!Array.isArray(modifiedTodo)) modifiedTodo = [modifiedTodo];
     updatedTodos = modifiedTodo
       .map(setModifiedTodoObj)
       .reduce((acc, curr) => {
         acc[curr.id] = curr;
         return acc
       }, {});
-  } else {
-    const modifiedTodoObj = setModifiedTodoObj(modifiedTodo);
-    updatedTodos[modifiedTodoObj.id] = modifiedTodoObj;
-  }
 
   dispatch(todoAction.updateTodo(updatedTodos));
 };

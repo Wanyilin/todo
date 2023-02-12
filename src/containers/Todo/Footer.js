@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, ButtonGroup} from 'react-bootstrap';
-import { TODOLIST_TYPE } from 'src/utils/type';
+import { TODOLIST_TYPE } from 'src/utils/consts';
 
 const Wrapper = styled.div`
   display: flex;
@@ -13,15 +13,16 @@ const Wrapper = styled.div`
 `
 
 const Footer = ({
-  todoStatistics: {
-    todoCount,
-    completedCount,
-  },
+  todoStatistics,
   setCurrCategory,
   currCategory,
   onClearCompletedTodo
 }) => {
-  const todoCat = Object.keys(TODOLIST_TYPE);
+  const {
+    completedCount,
+    todoCount
+  } = todoStatistics;
+  const todoCats = Object.keys(TODOLIST_TYPE);
   const todoCountStr = `${todoCount} ${todoCount > 1 ? 'items' : 'item'} left`
   return (
     <Wrapper>
@@ -29,7 +30,7 @@ const Footer = ({
         {todoCountStr}
       </span>
       <ButtonGroup>
-        {todoCat.map(cat => (
+        {todoCats.map(cat => (
           <Button
             key={cat}
             variant={currCategory === TODOLIST_TYPE[cat] ? 'secondary' : 'outline-secondary'}
